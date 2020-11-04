@@ -1,0 +1,14 @@
+[rest]
+    [rest.client.ping]
+        url = "http://192.168.0.230:1200/a.php"
+        codec = "json"
+        method = "post"
+        fail_retry = 3
+        fail_retry_interval = 300
+        dial_timeout = 1000
+        dial_disable_keep_alive = true
+        pool_max_idle = 100
+        pool_max_idle_per_host = 100
+        pool_idle_time = 90000
+        [rest.client.ping.headers]
+            "User-Agent" = "bbbb"
