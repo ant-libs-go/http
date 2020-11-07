@@ -10,22 +10,22 @@ package server
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"sync"
 	"time"
 
 	"github.com/ant-libs-go/config"
-	"github.com/ant-libs-go/http/server"
 	"github.com/ant-libs-go/safe_stop"
 )
 
 var (
 	once    sync.Once
 	lock    sync.RWMutex
-	servers map[string]*server.Server
+	servers map[string]*http.Server
 )
 
 func init() {
-	servers = map[string]*server.Server{}
+	servers = map[string]*http.Server{}
 }
 
 type restConfig struct {
@@ -42,7 +42,7 @@ type Cfg struct {
 	DialIdleTimeout  time.Duration `toml:"idle_timeout"`
 }
 
-func StartDefaultServer(rcvr interface{}) (err error) {
+func StartDefaultServer(rcvr http.Handler) (err error) {
 	return StartServer("default", rcvr)
 }
 
@@ -50,13 +50,13 @@ func StopDefaultServer() (err error) {
 	return StopServer("default")
 }
 
-func DefaultServer() (r *server.Server) {
+func DefaultServer() (r *http.Server) {
 	return Server("default")
 }
 
-func StartServer(name string, rcvr interface{}) (err error) {
+func StartServer(name string, rcvr http.Handler) (err error) {
 	safe_stop.Lock(1)
-	var srv *server.Server
+	var srv *http.Server
 	if srv, err = SafeServer(name); err == nil {
 		srv.Handler = rcvr
 	}
@@ -65,7 +65,7 @@ func StartServer(name string, rcvr interface{}) (err error) {
 
 func StopServer(name string) (err error) {
 	defer safe_stop.Unlock()
-	var srv *server.Server
+	var srv *http.Server
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if srv, err = SafeServer(name); err == nil {
@@ -74,7 +74,7 @@ func StopServer(name string) (err error) {
 	return
 }
 
-func Server(name string) (r *server.Server) {
+func Server(name string) (r *http.Server) {
 	var err error
 	if r, err = getServer(name); err != nil {
 		panic(err)
@@ -82,11 +82,11 @@ func Server(name string) (r *server.Server) {
 	return
 }
 
-func SafeServer(name string) (r *server.Server, err error) {
+func SafeServer(name string) (r *http.Server, err error) {
 	return getServer(name)
 }
 
-func getServer(name string) (r *server.Server, err error) {
+func getServer(name string) (r *http.Server, err error) {
 	lock.RLock()
 	r = servers[name]
 	lock.RUnlock()
@@ -96,7 +96,7 @@ func getServer(name string) (r *server.Server, err error) {
 	return
 }
 
-func addServer(name string) (r *server.Server, err error) {
+func addServer(name string) (r *http.Server, err error) {
 	var cfg *Cfg
 	if cfg, err = loadCfg(name); err != nil {
 		return
