@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/ant-libs-go/config"
+	"github.com/ant-libs-go/http/server"
 	"github.com/ant-libs-go/safe_stop"
-	"github.com/smallnest/rest/server"
 )
 
 var (
