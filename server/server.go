@@ -12,8 +12,6 @@ import (
 	"time"
 )
 
-type ServiceImpl struct{}
-
 func NewRestServer(cfg *Cfg) (r *http.Server, err error) {
 	r = &http.Server{Addr: cfg.DialAddr}
 	if cfg.DialReadTimeout > 0 {
