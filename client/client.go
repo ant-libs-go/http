@@ -117,6 +117,9 @@ func (this *RestClientPool) buildRequest(params interface{}, body interface{}) (
 
 	r, err = http.NewRequest(this.buildMethod(), this.buildUrl(params), reader)
 	if err == nil {
+		for k, v := range this.buildHeaders() {
+			r.Header.Set(k, v)
+		}
 		for k, v := range this.cfg.Headers {
 			r.Header.Set(k, v)
 		}
@@ -136,7 +139,7 @@ func (this *RestClientPool) buildMethod() (r string) {
 	return
 }
 
-func (this *RestClientPool) buildHeaders(cfg *Cfg) (r map[string]string) {
+func (this *RestClientPool) buildHeaders() (r map[string]string) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 	r = map[string]string{"User-Agent": DefaultUserAgent}
