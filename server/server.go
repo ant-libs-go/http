@@ -25,7 +25,7 @@ func NewRestServer(cfg *Cfg) (r *http.Server, err error) {
 	}
 
 	go func() {
-		if err := r.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = r.ListenAndServe(); err != nil && err == http.ErrServerClosed {
 			err = nil
 		}
 	}()
