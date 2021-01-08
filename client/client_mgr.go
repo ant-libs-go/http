@@ -121,7 +121,7 @@ func loadCfgs() (r map[string]*Cfg, err error) {
 		}))
 	})
 
-	config.Get(cfg)
+	cfg = config.Get(cfg).(*restConfig)
 	if err == nil && (cfg.Rest == nil || cfg.Rest.Cfgs == nil || len(cfg.Rest.Cfgs) == 0) {
 		err = fmt.Errorf("not configed")
 	}
