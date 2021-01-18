@@ -86,7 +86,7 @@ func getPool(name string) (r *RestClientPool, err error) {
 
 func addPool(name string) (r *RestClientPool, err error) {
 	var cfg *Cfg
-	if cfg, err = loadCfg(name); err != nil {
+	if cfg, err = LoadCfg(name); err != nil {
 		return
 	}
 	r = NewRestClientPool(cfg)
@@ -97,7 +97,7 @@ func addPool(name string) (r *RestClientPool, err error) {
 	return
 }
 
-func loadCfg(name string) (r *Cfg, err error) {
+func LoadCfg(name string) (r *Cfg, err error) {
 	var cfgs map[string]*Cfg
 	if cfgs, err = loadCfgs(); err != nil {
 		return
