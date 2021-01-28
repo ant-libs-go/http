@@ -88,7 +88,7 @@ func (this *RestClientPool) Call(params interface{}, body interface{}, resp inte
 	defer r.Body.Close()
 
 	var b []byte
-	if b, err = ioutil.ReadAll(r.Body); err == nil {
+	if b, err = ioutil.ReadAll(r.Body); err == nil && len(b) > 0 {
 		err = ht.Decode(this.cfg.Codec, b, resp)
 	}
 	return
