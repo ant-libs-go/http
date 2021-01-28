@@ -64,6 +64,9 @@ func NewRestClientPool(cfg *Cfg) *RestClientPool {
 func (this *RestClientPool) SetHeader(key string, value string) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
+	if this.cfg.Headers == nil {
+		this.cfg.Headers = make(map[string]string)
+	}
 	this.cfg.Headers[key] = value
 }
 
