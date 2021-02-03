@@ -38,14 +38,16 @@ const (
 )
 
 type RestClientPool struct {
-	lock   sync.RWMutex
-	client *http.Client
-	cfg    *Cfg
+	lock    sync.RWMutex
+	client  *http.Client
+	cfg     *Cfg
+	headers map[string]string
 }
 
 func NewRestClientPool(cfg *Cfg) *RestClientPool {
 	o := &RestClientPool{
-		cfg: cfg,
+		cfg:     cfg,
+		headers: map[string]string{},
 		client: &http.Client{
 			Timeout: cfg.DialTimeout * time.Millisecond,
 			Transport: &http.Transport{
@@ -58,16 +60,16 @@ func NewRestClientPool(cfg *Cfg) *RestClientPool {
 				MaxIdleConnsPerHost: cfg.PoolMaxIdlePerHost,                 // 每个host最大空闲连接数
 				IdleConnTimeout:     cfg.PoolIdleTimeout * time.Millisecond, // 闲置连接的过期时间
 			}}}
+	for k, v := range o.cfg.Headers {
+		o.SetHeader(k, v)
+	}
 	return o
 }
 
 func (this *RestClientPool) SetHeader(key string, value string) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
-	if this.cfg.Headers == nil {
-		this.cfg.Headers = make(map[string]string)
-	}
-	this.cfg.Headers[key] = value
+	this.headers[key] = value
 }
 
 // 注意：当resp不指定值时，需要手动进行response.Body.Close()
@@ -123,7 +125,7 @@ func (this *RestClientPool) buildRequest(params interface{}, body interface{}) (
 		for k, v := range this.buildHeaders() {
 			r.Header.Set(k, v)
 		}
-		for k, v := range this.cfg.Headers {
+		for k, v := range this.headers {
 			r.Header.Set(k, v)
 		}
 	}
