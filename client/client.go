@@ -176,20 +176,18 @@ func (this *RestClientPool) buildUrl(inp interface{}) string {
 }
 
 func (this *RestClientPool) buildBody(inp interface{}) (r io.Reader, err error) {
-	inp, err = ht.Encode(this.cfg.Codec, inp)
-	if err != nil {
-		return
-	}
-
 	switch v := inp.(type) {
-	case map[string]string:
-		r = strings.NewReader(util.MapToQueryStr(v))
 	case string:
 		r = strings.NewReader(v)
 	case []byte:
 		r = bytes.NewBuffer(v)
 	case io.Reader:
 		r = v
+	default:
+		var t []byte
+		if t, err = ht.Encode(this.cfg.Codec, v); err == nil {
+			r = bytes.NewBuffer(t)
+		}
 	}
 	return
 }

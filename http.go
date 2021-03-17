@@ -8,6 +8,8 @@
 package http
 
 import (
+	"fmt"
+
 	"github.com/ant-libs-go/util"
 	"github.com/golang/protobuf/proto"
 )
@@ -22,7 +24,7 @@ const (
 	CODEC_THRIFT Codec = "thrift"
 )
 
-func Encode(codec Codec, inp interface{}) (r interface{}, err error) {
+func Encode(codec Codec, inp interface{}) (r []byte, err error) {
 	switch codec {
 	case CODEC_JSON:
 		r, err = util.JsonEncode(inp)
@@ -32,6 +34,8 @@ func Encode(codec Codec, inp interface{}) (r interface{}, err error) {
 		r, err = util.GobEncode(inp)
 	case CODEC_THRIFT:
 		r, err = util.ThriftEncode(inp)
+	default:
+		err = fmt.Errorf("codec#%s not support")
 	}
 	return
 }
@@ -46,6 +50,8 @@ func Decode(codec Codec, b []byte, inp interface{}) (err error) {
 		err = util.GobDecode(b, inp)
 	case CODEC_THRIFT:
 		err = util.ThriftDecode(b, inp)
+	default:
+		err = fmt.Errorf("codec#%s not support")
 	}
 	return
 }
