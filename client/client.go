@@ -176,6 +176,10 @@ func (this *RestClientPool) buildUrl(inp interface{}) string {
 }
 
 func (this *RestClientPool) buildBody(inp interface{}) (r io.Reader, err error) {
+	if inp != nil {
+		return
+	}
+
 	switch v := inp.(type) {
 	case string:
 		r = strings.NewReader(v)
