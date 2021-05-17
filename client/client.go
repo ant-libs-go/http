@@ -73,10 +73,10 @@ func (this *RestClientPool) SetHeader(key string, value string) {
 }
 
 // 注意：当resp不指定值时，需要手动进行response.Body.Close()
-func (this *RestClientPool) Call(params interface{}, body interface{}, resp interface{}) (r *http.Response, err error) {
+func (this *RestClientPool) Call(headers map[string]string, params interface{}, body interface{}, resp interface{}) (r *http.Response, err error) {
 	var retry int
 	for {
-		if r, err = this.call(params, body); err == nil {
+		if r, err = this.call(headers, params, body); err == nil {
 			break
 		}
 		retry += 1
@@ -99,9 +99,9 @@ func (this *RestClientPool) Call(params interface{}, body interface{}, resp inte
 	return
 }
 
-func (this *RestClientPool) call(params interface{}, body interface{}) (r *http.Response, err error) {
+func (this *RestClientPool) call(headers map[string]string, params interface{}, body interface{}) (r *http.Response, err error) {
 	var req *http.Request
-	req, err = this.buildRequest(params, body)
+	req, err = this.buildRequest(headers, params, body)
 	if err == nil {
 		r, err = this.client.Do(req)
 	}
@@ -114,7 +114,7 @@ func (this *RestClientPool) call(params interface{}, body interface{}) (r *http.
 	return
 }
 
-func (this *RestClientPool) buildRequest(params interface{}, body interface{}) (r *http.Request, err error) {
+func (this *RestClientPool) buildRequest(headers map[string]string, params interface{}, body interface{}) (r *http.Request, err error) {
 	var reader io.Reader
 	if reader, err = this.buildBody(body); err != nil {
 		return
@@ -126,6 +126,9 @@ func (this *RestClientPool) buildRequest(params interface{}, body interface{}) (
 			r.Header.Set(k, v)
 		}
 		for k, v := range this.headers {
+			r.Header.Set(k, v)
+		}
+		for k, v := range headers {
 			r.Header.Set(k, v)
 		}
 	}
