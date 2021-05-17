@@ -57,7 +57,7 @@ func Call(name string, params interface{}, body interface{}, resp interface{}) (
 	var cli *RestClientPool
 	cli, err = SafePool(name)
 	if err == nil {
-		r, err = cli.Call(params, body, resp)
+		r, err = cli.Call(nil, params, body, resp)
 	}
 	return
 }
