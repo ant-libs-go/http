@@ -1,4 +1,4 @@
-# redis
+# http
 基于net/http封装的http库
 
 # 功能
