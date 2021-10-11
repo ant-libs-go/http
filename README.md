@@ -1,15 +1,26 @@
-# http
+# Http
+
 基于net/http封装的http库
 
-# 功能
- - 简化Server实例初始化流程，基于配置自动对Server进行初始化且启动
- - 简化Client实例初始化流程，指定请求参数及响应结构体，基于配置自动发起网络请求并将响应结果反序列化为指定结构体
- - Client支持连接池、多实例等场景
- - Client的数据序列化支持json、pb、gob、thrift，请求方式支持get、post、json\_post、file\_post、bytes\_post
+[![License](https://img.shields.io/:license-apache%202-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GoDoc](https://godoc.org/github.com/ant-libs-go/http?status.png)](http://godoc.org/github.com/ant-libs-go/http)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ant-libs-go/http)](https://goreportcard.com/report/github.com/ant-libs-go/http)
 
+# 特性
 
-# HttpServer 基本使用
- - toml 配置文件
+* 简化Server实例初始化流程，基于配置自动对Server进行初始化且启动
+* 简化Client实例初始化流程，指定请求参数及响应结构体，基于配置自动发起网络请求并将响应结果反序列化为指定结构体
+* Client支持连接池、多实例等场景
+* Client的数据序列化支持json、pb、gob、thrift，请求方式支持get、post、json\_post、file\_post、bytes\_post
+
+## 安装
+
+	go get github.com/ant-libs-go/http
+
+# HttpServer 快速开始
+
+* toml 配置文件
+
     ```
     [rest.server.default]
         addr = ":8080"
@@ -18,7 +29,8 @@
         dial_timeout = 1000
     ```
 
- - 使用方法
+* 使用方法
+
 	```golang
     // 初始化config包，参考config模块
     code...
@@ -37,8 +49,9 @@
     rest.StopServer("default")
     ```
 
-# HttpClient 基本使用
- - toml 配置文件
+# HttpClient 快速开始
+* toml 配置文件
+
     ```
     [rest.client.ping]
         url = "http://127.0.0.1/ping"
@@ -53,7 +66,8 @@
         pool_idle_time = 90000
     ```
 
- - 使用方法
+* 使用方法
+
 	```golang
     // 初始化config包，参考config模块
     code...
