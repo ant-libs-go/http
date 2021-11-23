@@ -43,18 +43,18 @@ type Cfg struct {
 }
 
 func StartDefaultServer(rcvr http.Handler) (err error) {
-	return StartServer("default", rcvr)
+	return StartServe("default", rcvr)
 }
 
 func StopDefaultServer() (err error) {
-	return StopServer("default")
+	return StopServe("default")
 }
 
 func DefaultServer() (r *http.Server) {
 	return Server("default")
 }
 
-func StartServer(name string, rcvr http.Handler) (err error) {
+func StartServe(name string, rcvr http.Handler) (err error) {
 	safe_stop.Lock(1)
 	var srv *http.Server
 	if srv, err = SafeServer(name); err == nil {
@@ -63,7 +63,7 @@ func StartServer(name string, rcvr http.Handler) (err error) {
 	return
 }
 
-func StopServer(name string) (err error) {
+func StopServe(name string) (err error) {
 	defer safe_stop.Unlock()
 	var srv *http.Server
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
