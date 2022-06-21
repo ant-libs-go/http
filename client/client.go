@@ -79,6 +79,7 @@ func (this *RestClientPool) Call(headers map[string]string, params interface{}, 
 		if r, err = this.call(headers, params, body); err == nil {
 			break
 		}
+		r.Body.Close()
 		retry += 1
 		if retry >= this.cfg.FailRetry {
 			err = errors.New(fmt.Sprintf("request failed, %v, retry completed", err))
