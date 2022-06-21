@@ -79,7 +79,6 @@ func (this *RestClientPool) Call(headers map[string]string, params interface{}, 
 		if r, err = this.call(headers, params, body); err == nil {
 			break
 		}
-		r.Body.Close()
 		retry += 1
 		if retry >= this.cfg.FailRetry {
 			err = errors.New(fmt.Sprintf("request failed, %v, retry completed", err))
@@ -109,8 +108,11 @@ func (this *RestClientPool) call(headers map[string]string, params interface{}, 
 	if err == nil {
 		if r.StatusCode != 200 && r.StatusCode != 204 {
 			err = errors.New(fmt.Sprintf("http status is not equal 200/204, is: %d", r.StatusCode))
-			return
 		}
+	}
+	if err != nil && r != nil {
+		r.Body.Close()
+		r = nil
 	}
 	return
 }
