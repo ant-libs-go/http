@@ -11,7 +11,7 @@ import (
 	"fmt"
 
 	"github.com/ant-libs-go/util"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 type Codec string
